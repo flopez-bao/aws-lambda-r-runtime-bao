@@ -1,0 +1,69 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Version:
+    Type: String
+Globals:
+  Function:
+    Runtime: provided
+    Timeout: 300
+    MemorySize: 3008
+    Layers:
+    - Ref: RuntimeLayer
+Resources:
+  RuntimeLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: r-runtime-${Version}
+      ContentUri: s3://r-lambda-runtimes/R-3.6.3/40855b5bd0d43ee10e95c261d8d4cd3f
+      LicenseInfo: MIT
+  RuntimeLayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn:
+        Ref: RuntimeLayer
+      Principal: '*'
+  RecommendedLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: r-recommended-${Version}
+      ContentUri: s3://r-lambda-runtimes/R-3.6.3/8dc16d5b0c24b610766ba86f0bc6112e
+      LicenseInfo: MIT
+  RecommendedLayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn:
+        Ref: RecommendedLayer
+      Principal: '*'
+  DplyrLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: r-dplyr-${Version}
+      ContentUri: s3://r-lambda-runtimes/R-3.6.3/63c7bb4380c66d52447229bdbc166fb8
+      LicenseInfo: MIT
+  DplyrLayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn:
+        Ref: DplyrLayer
+      Principal: '*'
+  AWSLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName:
+        Fn::Sub: r-awspack-${Version}
+      ContentUri: s3://r-lambda-runtimes/R-3.6.3/8a2f6dbd7dfe87d7143313497cceea5b
+      LicenseInfo: MIT
+  AWSLayerPermission:
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn:
+        Ref: AWSLayer
+      Principal: '*'
